@@ -8,11 +8,9 @@ web_app = Flask("Vets App")
 def index():
     # return "This is Amazing. Its: {}".format(datetime.datetime.today())
     return render_template('index.html')
-
 @web_app.route("/register")
 def register():
     return render_template('register.html')
-
 @web_app.route("/home")
 def home():
     return render_template('home.html', email=session['vet_email'])
@@ -66,17 +64,17 @@ def update_customer_in_db():
     print(customer_data_to_update)
     db = MongoDBHelper(collection="customer")
     query = {'_id': ObjectId(request.form['cid'])}
-    db.update(customer_data_to_update, query)
+    #db.update(customer_data_to_update, query)
     return render_template('success.html', message="{} updated successfully".format(customer_data_to_update['name']))
 @web_app.route("/login-vet", methods=['POST'])
 def login_vet():
     vet_data = {
         'email': request.form['email'],
-        'password': hashlib.sha256(request.form['pwd'].encode('utf-8')).hexdigest(),
+        'password': hashlib.sha256(request.form['pswd'].encode('utf-8')).hexdigest(),
     }
     print(vet_data)
     db = MongoDBHelper(collection="vets")
-    documents = list(db.fetch(vet_data))
+    documents = db.fetch(vet_data)
     print(documents, type(documents))
     if len(documents) == 1:
         session['vet_id'] = str(documents[0]['_id'])
@@ -125,8 +123,17 @@ def fetch_pets_of_customer(id):
 @web_app.route("/delete-customer/<id>")
 def delete_customer(id):
     db = MongoDBHelper(collection="customer")
+    query = {'_id': ObjectId(id)}
+    customer = db.fetch(query)[0]
+    db.delete(query)
+    return render_template('success.html', message="Customer {} Deleted".format(customer['name']))
+@web_app.route("/update-customer/<id>")
 def update_customer(id):
-    name=session['vet_name'], customer="customer"
+    db = MongoDBHelper(collection="customer")
+    query = {'_id': ObjectId(id)}
+    customer = db.fetch(query)[0]
+    return render_template('update-customer.html', email=session['vet_email'],
+                           name=session['vet_name'], customer=customer)
 
 
 @web_app.route("/search")
