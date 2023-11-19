@@ -1,25 +1,18 @@
-from mongodb2 import Customer
-from mongodb3 import MongoDBHelper
-from bson.objectid import ObjectId
-def main():
-      db = MongoDBHelper()
+import pymongo
+#import certifi # pip install certifi | If SSL error
 
+# ca = certifi.where() # If SSL error
 
-      #customer = Customer()
-      #customer.read_customer_data()
+uri = "mongodb+srv://vithalchandna:root123@cluster0.zzl8oin.mongodb.net/?retryWrites=true&w=majority"
+client = pymongo.MongoClient(uri)
+# client = pymongo.MongoClient(uri, tlsCAFile=ca) # If SSL error
+db = client['cutomerfood']
+collections = db.list_collection_names()
+# print(collections)
 
-      #document = vars(customer)
-      #db.insert(document)
+for collection in collections:
+    print(collection)
 
-      query = {'phone': '+91 854548454'}
-      #query = {'_id': ObjectId('64c513a7f43099791aa78e2a')}
-      #db.delete(query)
-
-      #db.fetch()
-      db.fetch(query=query)
-
-      document = {'name': 'Raman' , 'age': 18}
-      db.update(document,query)
-
-if __name__ == "__main__":
-      main()
+#documents = db['students'].find()
+#for document in documents:
+  #  print(document)

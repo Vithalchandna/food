@@ -3,16 +3,16 @@ from tabulate import tabulate
 
 class MongoDBHelper:
 
-    def __init__(self, collection='customer'):
+    def __init__(self, collection='customerfoood'):
         uri = "mongodb+srv://vithalchandna:root123@cluster0.zzl8oin.mongodb.net/?retryWrites=true&w=majority"
         client = pymongo.MongoClient(uri)
-        self.db = client['pythontraining']
+        self.db = client['abc']
         self.collection = self.db[collection]
         print("MongoDB Connected")
 
-    def insert(self, document):
-        result = self.collection.insert_one(document)
-        print("Document Inserted:", result)
+    def insert(self, data):
+        result = self.collection.insert_one(data)
+        return result
 
     def delete(self, query):
         result = self.collection.delete_one(query)
